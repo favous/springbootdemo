@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.demo.order.mapper.GameMapper">
+	<resultMap type="com.demo.order.entity.Game" id="game">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="type" column="type" />
+		<result property="size" column="size" />
+		<result property="times" column="times" />
+		<result property="version" column="version" />
+		<result property="xj" column="xj" />
+		<result property="file" column="file" />
+		<result property="picture" column="picture" />
+		<result property="icon" column="icon" />
+		<result property="jdesc" column="jdesc" />
+		<result property="jdjs" column="jdjs" />
+		<result property="isshow" column="isshow" />
+		<result property="dj" column="dj" />
+		<result property="hb" column="hb" />
+		<result property="rm" column="rm" />
+		<result property="rsort" column="rsort" />
+		<result property="wy" column="wy" />
+		<result property="kfname" column="kfname" />
+		<result property="kftimes" column="kftimes" />
+		<result property="wsort" column="wsort" />
+		<result property="bw" column="bw" />
+		<result property="bsort" column="bsort" />
+		<result property="sort" column="sort" />
+		<result property="add_time" column="add_time" />
+		<result property="developer" column="developer" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="com.demo.order.entity.Game" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		t_game(title,type,size,times,version,xj,file,picture,icon,jdesc,jdjs,isshow,dj,hb,rm,rsort,wy,kfname,kftimes,wsort,bw,bsort,sort,add_time, developer)
+		VALUES(#{title},#{type},#{size},#{times},#{version},#{xj},#{file},#{picture},#{icon},#{jdesc},#{jdjs},#{isshow},#{dj},#{hb},#{rm},#{rsort},#{wy},#{kfname},#{kftimes},#{wsort},#{bw},#{bsort},#{sort},now(), #{developer})
+	</insert>
+	
+</mapper>
