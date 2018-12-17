@@ -3,6 +3,7 @@ package com.demo.order.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.order.entity.Game;
@@ -40,5 +41,14 @@ public class OrderController {
 		System.out.println("ssssssssssssssssssss");
 		
 		return "Hello World !";
+	}
+	
+	@RequestMapping("/getGame")
+	@ResponseBody
+	public Game getGame(){
+		Game game = new Game();
+		game.setType("");
+		game.setSort(2);
+	    return game;
 	}
 }

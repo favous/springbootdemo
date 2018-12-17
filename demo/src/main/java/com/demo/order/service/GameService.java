@@ -5,4 +5,6 @@ import com.demo.order.entity.Game;
 public interface GameService {
 
 	boolean insert(Game game);
+
+	void test();
 }
