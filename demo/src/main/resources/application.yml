@@ -1,0 +1,47 @@
+server:
+  port: 80
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 10000
+    min-spare-threads: 30
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: springboot
+  datasource:
+        #时区serverTimezone没有会报错#
+    url: jdbc:mysql://localhost:3306/gyumaru?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirms: true
+    virtual-host: /
+    listener:
+      simple:
+              #默认是1，0是轮询模式，1是公平模式
+        prefetch: 0 
+  #Redis配置信息
+  redis:
+    #(默认为0)
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: root
+    timeout: 3000
+    jedis:
+      pool:
+        max-active: 200
+        max-wait: 1000
+        max-idle: 500
+        min-idle: 50
+    
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: gyumaru
