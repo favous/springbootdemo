@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.advertisementManage.dao.AdvPlanDao">
+	<resultMap type="com.gyumaru.advertisementManage.pojo.AdvPlan" id="advPlan">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="type" column="type" />
+		<result property="startdate" column="startdate" />
+		<result property="enddate" column="enddate" />
+		<result property="link" column="link" />
+		<result property="introduction" column="introduction" />
+		<result property="expectedNum" column="expected_num" />
+		<result property="dispalyNum" column="dispaly_num" />
+		<result property="clickNum" column="click_num" />
+		<result property="totalNum" column="total_num" />
+		<result property="totaldisNum" column="totaldis_num" />
+		<result property="state" column="state" />
+		<result property="subtime" column="subtime" />
+	</resultMap>
+	<sql id="base_column">
+		id,name,type,DATE_FORMAT(startdate,'%Y-%m-%d') as startdate,DATE_FORMAT(enddate,'%Y-%m-%d') as enddate,link,introduction,expected_num,dispaly_num,click_num,total_num,totaldis_num,state,DATE_FORMAT(subtime,'%Y-%m-%d %H:%i') as subtime
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="advPlan">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="advPlan">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan
+		<where>
+			<if test="name !=null and name !=''">
+				AND name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="type !=null and type !=''">
+				AND type=#{type}
+			</if>
+			<if test="state !=null and state !=''">
+				AND state=#{state}
+			</if>
+			<if test="startdate !=null and startdate !=''">
+				AND startdate&gt;=#{startdate}
+			</if>
+			<if test="enddate !=null and enddate !=''">
+				AND enddate&lt;=#{enddate}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(0)
+		FROM t_adv_plan
+		<where>
+			<if test="name !=null and name !=''">
+				AND name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="type !=null and type !=''">
+				AND type=#{type}
+			</if>
+			<if test="state !=null and state !=''">
+				AND state=#{state}
+			</if>
+			<if test="startdate !=null and startdate !=''">
+				AND startdate&gt;=#{startdate}
+			</if>
+			<if test="enddate !=null and enddate !=''">
+				AND enddate&lt;=#{enddate}
+			</if>
+		</where>
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlan"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO
+		t_adv_plan(name,type,startdate,enddate,link,introduction,expected_num,dispaly_num,click_num,state,subtime,total_num,totaldis_num)
+		VALUES(#{name},#{type},#{startdate},#{enddate},#{link},#{introduction},#{expectedNum},#{dispalyNum},#{clickNum},#{state},now(),#{totalNum},#{totaldisNum})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlan">
+		UPDATE t_adv_plan
+		<set>
+			<if test="name !=null and name !=''">
+				name=#{name},
+			</if>
+			<if test="type !=null and type !=''">
+				type=#{type},
+			</if>
+			<if test="startdate !=null and startdate !=''">
+				startdate=#{startdate},
+			</if>
+			<if test="enddate !=null and enddate !=''">
+				enddate=#{enddate},
+			</if>
+			<if test="link !=null and link !=''">
+				link=#{link},
+			</if>
+			<if test="introduction !=null and introduction !=''">
+				introduction=#{introduction},
+			</if>
+			<if test="expectedNum !=null and expectedNum !=''">
+				expected_num=#{expectedNum},
+			</if>
+			<if test="dispalyNum !=null and dispalyNum !=''">
+				dispaly_num=#{dispalyNum},
+			</if>
+			<if test="clickNum !=null and clickNum !=''">
+				click_num=#{clickNum},
+			</if>
+			
+			<if test="subtime !=null and subtime !=''">
+				subtime=#{subtime},
+			</if>
+			<if test="totalNum !=null and totalNum !=''">
+				total_num=#{totalNum},
+			</if>
+			<if test="totaldisNum !=null and totaldisNum !=''">
+				totaldis_num=#{totaldisNum},
+			</if>
+			<if test="state !=null and state !=''">
+				state=#{state}
+			</if>
+			
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_adv_plan WHERE
+		id=#{id}
+	</delete>
+</mapper>

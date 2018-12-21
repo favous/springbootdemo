@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.sysManage.dao.RoleDao">
+    <resultMap type="com.gyumaru.pojo.Role" id="role">
+        <id property="id" column="id"/>
+        <result property="role_name" column="role_name"/>
+       	<collection property="menus" columnPrefix="menu_"
+      		resultMap="com.gyumaru.sysManage.dao.MenuDao.menu">  
+        </collection>  	
+    </resultMap> 
+    <select id="getInfoById" parameterType="Integer" resultMap="role">
+        SELECT r.id,
+        	   r.role_name,
+        	   m.id AS menu_id,
+        	   m.p_id AS menu_p_id,
+        	   m.name AS menu_name,
+        	   m.icon AS menu_icon,
+        	   m.menu_url AS menu_menu_url
+        	FROM t_role r 
+        	INNER JOIN t_role_menu rm ON r.id=rm.role_id
+        	INNER JOIN d_menu m ON rm.menu_id=m.id
+        	WHERE r.id=#{id}
+    </select>
+    <select id="getInfoList" parameterType="Map" resultMap="role">
+        SELECT r.id,
+        	   r.role_name,
+        	   m.id AS menu_id,
+        	   m.p_id AS menu_p_id,
+        	   m.name AS menu_name,
+        	   m.icon AS menu_icon,
+        	   m.menu_url AS menu_menu_url
+        	FROM t_role r 
+        	INNER JOIN t_role_menu rm ON r.id=rm.role_id
+        	INNER JOIN d_menu m ON rm.menu_id=m.id
+        	WHERE 1=1
+        	<if test="roleId!=null and roleId!=''">
+        	    AND r.id=#{roleId}
+        	</if>
+        	<if test="roleName!=null and roleName!=''">
+        		AND r.role_name LIKE CONCAT('%',#{#roleName},'%')    
+        	</if>
+        	ORDER BY r.id
+    </select>
+    <insert id="insert" parameterType="com.gyumaru.pojo.Role">
+        INSERT INTO 
+        	t_role(
+        		role_name
+        		)
+        	VALUES(
+        		#{role_name}
+        		)
+    </insert>
+    <update id="update" parameterType="com.gyumaru.pojo.Role">
+        UPDATE t_role 
+        <set>
+			<if test="role_name!=null and role_name!=''">
+			    role_name=#{role_name}
+			</if>            
+        </set>
+        WHERE id=#{id}
+    </update>
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM t_role WHERE id=#{id}
+    </delete>
+        <!-- 批量插入 授权 -->
+    <insert id="insertRoleMenu" parameterType="java.util.List">
+        INSERT INTO t_role_menu(role_id,menu_id) VALUES
+        <foreach collection="list" item="rm" separator=",">
+            (#{rm.roleId},#{rm.menuId})
+        </foreach>
+    </insert>
+    <!-- 带返回值的插入 返回值为id -->
+    <insert id="insertRole" parameterType="com.gyumaru.pojo.Role">
+        INSERT INTO t_role(role_name) VALUES(#{role_name})
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <insert id="insertMenu" parameterType="java.util.List">
+        INSERT INTO t_role_menu(role_id,menu_id) VALUES
+        <foreach collection="list" item="map" separator=",">
+            (#{map.roleId},#{map.menuId})
+        </foreach>
+    </insert>
+</mapper>

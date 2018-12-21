@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.sysManage.dao.RemindDao">
+	<resultMap type="com.gyumaru.pojo.Remind" id="remind">
+		<id property="id" column="id" />
+		<result property="type" column="type" />
+		<result property="out_id" column="out_id" />
+		<result property="groups_id" column="groups_id" />
+		<result property="create_time" column="create_time" />
+	</resultMap>
+	<sql id="base_column">
+		id,type,out_id,groups_id,DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') as create_time
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="remind">
+		SELECT
+		<include refid="base_column" />
+		FROM t_remind WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="remind">
+		SELECT
+		<include refid="base_column" />
+		FROM t_remind
+		<where>
+			<if test="type !=null">
+				AND type=#{type}
+			</if>
+			<if test="type1 !=null">
+				OR type=1
+			</if>
+			<if test="type2 !=null">
+				OR type=2
+			</if>
+			<if test="type3 !=null">
+				OR type=3
+			</if>
+			<if test="type4 !=null">
+				OR type=4
+			</if>
+			<if test="type5 !=null">
+				OR type=5
+			</if>
+			<if test="groups_id !=null and groups_id !=''">
+				OR (type=4 AND groups_id=#{groups_id})
+			</if>
+			<if test="out_id !=null and out_id !=''">
+				AND out_id=#{out_id}
+			</if>
+		</where>
+		order by create_time desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM t_remind m 
+		<where>
+			<if test="type !=null">
+				AND type=#{type}
+			</if>
+			<if test="out_id !=null and out_id !=''">
+				AND out_id=#{out_id}
+			</if>
+			<if test="groups_id !=null and groups_id !=''">
+				AND groups_id=#{groups_id}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.pojo.Remind">
+		INSERT INTO
+		t_remind(type,out_id,groups_id,create_time)
+		VALUES(#{type},#{out_id},#{groups_id},now)
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.Remind">
+		UPDATE t_remind
+		<set>
+			<if test="type !=null and type !=''">
+				type=#{type},
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_remind WHERE id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.articleManage.dao.ArticleDao">
+	<resultMap type="com.gyumaru.pojo.Article" id="Article">
+		<id property="id" column="id" />
+		<result property="articleTitle" column="article_title" />
+		<result property="articleAbstract" column="article_abstract" />
+		<result property="articleAuthor" column="article_author" />
+		<result property="articleCoverPic" column="article_cover_pic" />
+		<result property="articleThumbsupCount" column="article_thumbsup_count" />
+		<result property="status" column="status" />
+		<result property="state" column="state" />
+		<result property="publishTime" column="publish_time" />
+		<result property="createTime" column="create_time" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="pl" column="pl" />
+	</resultMap>
+
+	<sql id="base_column">
+		id,article_title,article_abstract,article_author,article_cover_pic,article_thumbsup_count,status,state,DATE_FORMAT(publish_time,'%Y-%m-%d %H:%i') as publish_time,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,
+		DATE_FORMAT(modify_time,'%Y-%m-%d') as modify_time,pl
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="Article">
+		SELECT
+		<include refid="base_column" />
+		FROM article WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="Article">
+		SELECT
+		<include refid="base_column" />
+		FROM article 
+		<where>
+			<if test="article_title !=null and article_title !=''">
+				AND article_title LIKE CONCAT('%',#{article_title},'%')
+			</if>
+			<if test="status !=null and status !=''">
+				AND status = #{status}
+			</if>
+			<if test="state !=null and state !=''">
+				AND state = #{state}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM article 
+		<where>
+			<if test="article_title !=null and article_title !=''">
+				AND article_title LIKE CONCAT('%',#{article_title},'%')
+			</if>
+			<if test="status !=null and status !=''">
+				AND status = #{status}
+			</if>
+			<if test="state !=null and state !=''">
+				AND state = #{state}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+
+
+	<insert id="insert" parameterType="com.gyumaru.pojo.Article" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO
+		article(article_title,article_abstract,article_author,article_cover_pic,article_thumbsup_count,status,state,publish_time,create_time,modify_time,pl)
+		VALUES(#{articleTitle},#{articleAbstract},#{articleAuthor},#{articleCoverPic},#{articleThumbsupCount},#{status},#{state},#{publishTime},#{createTime},#{modifyTime},#{pl})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.Article">
+		UPDATE article
+		<set>
+			<if test="articleAbstract !=null and articleAbstract !=''">
+				article_abstract=#{articleAbstract},
+			</if>
+			<if test="articleAuthor !=null and articleAuthor !=''">
+				article_author=#{articleAuthor},
+			</if>
+			<if test="articleCoverPic !=null and articleCoverPic !=''">
+				article_cover_pic=#{articleCoverPic},
+			</if>
+			<if test="articleThumbsupCount !=null and articleThumbsupCount !=''">
+				article_thumbsup_count=#{articleThumbsupCount},
+			</if>
+			<if test="status !=null and status !=''">
+				status=#{status},
+			</if>
+			<if test="state !=null and state !=''">
+				state=#{state},
+			</if>
+			<if test="publishTime !=null and publishTime !=''">
+				publish_time=#{publishTime},
+			</if>
+			<if test="createTime !=null and createTime !=''">
+				create_time=#{createTime},
+			</if>
+			<if test="modifyTime !=null and modifyTime !=''">
+				modify_time=#{modifyTime},
+			</if>
+			<if test="pl !=null and pl !=''">
+				pl=#{pl},
+			</if>
+			<if test="articleTitle !=null and articleTitle !=''">
+				article_title=#{articleTitle}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM article WHERE
+		id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Gyumaru</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .row {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .imgbox {
+            width: 100%;
+            height: 100%;
+            background: #c93a3a;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        img {
+            width: 438px;
+            height: 438px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto
+        }
+
+        @media screen and (min-width:1200px) {
+            img {
+                transform: scale(1)
+            }
+        }
+
+        @media screen and (min-width: 960px) and (max-width: 1199px) {
+            img {
+                transform: scale(0.9)
+            }
+        }
+
+        @media screen and (min-width: 768px) and (max-width: 959px) {
+            img {
+                transform: scale(0.8)
+            }
+        }
+
+        @media screen and (min-width: 480px) and (max-width: 767px) {
+            img {
+                transform: scale(0.6)
+            }
+        }
+
+        @media only screen and (max-width: 479px) {
+            .imgbox {
+                width: 100%;
+                height: 100%;
+                background: #c93a3a;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            img {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="imgbox">
+                <img src="logo.png" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

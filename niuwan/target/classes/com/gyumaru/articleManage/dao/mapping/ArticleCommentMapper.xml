@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.articleManage.dao.ArticleCommentDao">
+	<resultMap type="com.gyumaru.pojo.ArticleComment" id="ArticleComment">
+		<id property="id" column="id" />
+		<result property="articleId" column="articleId" />
+		<result property="commentType" column="commentType" />
+		<result property="commentContent" column="commentContent" />
+		<result property="fromUid" column="fromUid" />
+		<result property="toUid" column="toUid" />
+		<result property="replyId" column="replyId" />
+		<result property="state" column="state" />
+		<result property="createTime" column="createTime" />
+		<result property="modifyTime" column="modifyTime" />
+	</resultMap>
+
+	<sql id="base_column">
+		id,articleId,commentType,commentContent,fromUid,toUid,replyId,state,DATE_FORMAT(createTime,'%Y-%m-%d') as createTime,
+		DATE_FORMAT(modifyTime,'%Y-%m-%d') as modifyTime
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="ArticleComment">
+		SELECT
+		<include refid="base_column" />
+		FROM article_comment WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="ArticleComment">
+		SELECT
+		<include refid="base_column" />
+		FROM article_comment m
+		<where>
+			<if test="id!=null and id!=''">
+				AND id = #{id}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+
+
+	<insert id="insert" parameterType="com.gyumaru.pojo.ArticleComment">
+		INSERT INTO
+		article_comment(articleId,commentType,commentContent,fromUid,toUid,replyId,state,createTime,modifyTime)
+		VALUES(#{articleId},#{commentType},#{commentContent},#{fromUid},#{toUid},#{replyId},#{state},#{createTime},#{modifyTime})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.ArticleContent">
+		UPDATE article_comment
+		<set>
+			<if test="commentType !=null and commentType !=''">
+				commentType=#{commentType},
+			</if>
+			<if test="commentContent !=null and commentContent !=''">
+				commentContent=#{commentContent},
+			</if>
+			<if test="fromUid !=null and fromUid !=''">
+				fromUid=#{fromUid},
+			</if>
+			<if test="toUid !=null and toUid !=''">
+				toUid=#{toUid},
+			</if>
+			<if test="replyId !=null and replyId !=''">
+				replyId=#{replyId},
+			</if>
+			<if test="state !=null and state !=''">
+				state=#{state},
+			</if>
+			<if test="createTime !=null and createTime !=''">
+				createTime=#{createTime},
+			</if>
+			<if test="modifyTime !=null and modifyTime !=''">
+				modifyTime=#{modifyTime},
+			</if>
+			<if test="articleId !=null and articleId !=''">
+				articleId=#{articleId}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM article_comment WHERE
+		id=#{id}
+	</delete>
+</mapper>

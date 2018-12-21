@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.advertisementManage.dao.AdvPlanTimeDao">
+	<resultMap type="com.gyumaru.advertisementManage.pojo.AdvPlanTime" id="advPlanTime">
+		<id property="id" column="id" />
+		<result property="tdate" column="tdate" />
+		<result property="thour" column="thour" />
+		<result property="type" column="type" />
+		<result property="advPlanId" column="adv_plan_id" />
+		<result property="state" column="state" />
+	</resultMap>
+
+	<sql id="base_column">
+		id,tdate,thour,type,adv_plan_id,state
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="advPlanTime">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan_time WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="advPlanTime">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan_time 
+		<where>
+			<if test="tdate !=null and tdate !=''">
+				AND tdate=#{tdate}
+			</if>
+			<if test="type !=null and type !=''">
+				AND type=#{type}
+			</if>
+			 <if test="startTime!=null and startTime!=''">
+                AND tdate&gt;=#{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                AND tdate&lt;=#{endTime}
+            </if>
+			<if test="thour !=null and thour !=''">
+				AND thour=#{thour}
+			</if>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="notAdvPlanId !=null and notAdvPlanId !=''">
+				AND adv_plan_id!=#{notAdvPlanId}
+			</if>
+			<if test="state !=null and state !=''">
+				AND state=#{state}
+			</if>
+		</where>
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM t_adv_plan_time 
+		<where>
+			<if test="tdate !=null and tdate !=''">
+				AND tdate=#{tdate}
+			</if>
+			<if test="type !=null and type !=''">
+				AND type=#{type}
+			</if>
+			<if test="thour !=null and thour !=''">
+				AND thour=#{thour}
+			</if>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="state !=null and state !=''">
+				AND state=#{state}
+			</if>
+		</where>
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlanTime">
+		INSERT INTO
+		t_adv_plan_time(tdate,thour,type,adv_plan_id,state)
+		VALUES(#{tdate},#{thour},#{type},#{advPlanId},#{state})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlanTime">
+		UPDATE t_adv_plan_time
+		<set>
+			<if test="tdate !=null and tdate !=''">
+				tdate=#{tdate},
+			</if>
+			<if test="thour !=null and thour !=''">
+				thour=#{thour},
+			</if>
+			<if test="advPlanId !=null and advPlanId !=''">
+				adv_plan_id=#{advPlanId},
+			</if>
+			<if test="state !=null and state !=''">
+				state=#{state}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_adv_plan_time WHERE
+		id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.sysManage.dao.AdminDao">
+    <resultMap type="com.gyumaru.pojo.Admin" id="admin">
+        <id property="id" column="id"/>
+        <result property="card" column="card"/>
+        <result property="pwd" column="pwd"/>
+        <result property="state" column="state"/>
+        <association property="role" javaType="Role"
+            column="role_id" select="com.gyumaru.sysManage.dao.RoleDao.getInfoById">
+        </association>
+    </resultMap>
+    <sql id="base_column" >
+   	 id, card, pwd, state, role_id
+  	</sql>
+    <select id="getInfoById" parameterType="Integer" resultMap="admin">
+        SELECT <include refid="base_column" /> FROM t_admin WHERE id=#{id}
+    </select>
+    <select id="getInfoList" parameterType="Map" resultMap="admin">
+        SELECT <include refid="base_column" />
+        FROM t_admin
+        WHERE state  &gt; -1
+        <if test="card!=null and card!=''">
+            AND card=#{card}
+        </if>
+        <if test="pwd!=null and pwd!=''">
+            AND pwd=#{pwd}
+        </if>
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        <if test="role_id!=null">
+            AND role_id=#{role_id}
+        </if>
+    </select>
+    <insert id="insert" parameterType="com.gyumaru.pojo.Admin">
+        INSERT INTO t_admin(
+	        card,
+	        pwd,
+	        role_id,
+	        state
+        )
+        VALUES(
+        	#{card},
+        	#{pwd},
+        	#{role.id},
+        	#{state}
+        )
+    </insert>
+    <update id="update" parameterType="com.gyumaru.pojo.Admin">
+        UPDATE t_admin 
+        <set>
+            <if test="card!=null and card!=''">
+                card=#{card},
+            </if>
+            <if test="pwd!=null and pwd!=''">
+                pwd=#{pwd},
+            </if>
+            <if test="role!=null">
+                role_id=#{role.id},
+            </if>
+            <if test="state!=null">
+                state=#{state}
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM t_admin WHERE id=#{id}
+    </delete>
+    <delete id="deleteAdminList" parameterType="Integer">
+        UPDATE t_admin
+        <set>
+            state=-1
+        </set>
+        WHERE role_id=#{roleId}
+    </delete>
+</mapper>

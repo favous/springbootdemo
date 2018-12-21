@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.articleManage.dao.ArticleContentDao">
+	<resultMap type="com.gyumaru.pojo.ArticleContent" id="ArticleContent">
+		<id property="id" column="id" />
+		<result property="articleId" column="article_id" />
+		<result property="articleContent" column="article_content" />
+	</resultMap>
+
+	<sql id="base_column">
+		id,article_id,article_content
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="ArticleContent">
+		SELECT
+		<include refid="base_column" />
+		FROM article_content WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="ArticleContent">
+		SELECT
+		<include refid="base_column" />
+		FROM article_content 
+		<where>
+			<if test="articleId !=null and articleId !=''">
+				AND article_id = #{articleId}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+
+
+	<insert id="insert" parameterType="com.gyumaru.pojo.ArticleContent">
+		INSERT INTO
+		article_content(article_id,article_content)
+		VALUES(#{articleId},#{articleContent})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.ArticleContent">
+		UPDATE article_content
+		<set>
+			<if test="articleContent !=null and articleContent !=''">
+				article_content=#{articleContent},
+			</if>
+			<if test="articleId !=null and articleId !=''">
+				article_id=#{articleId}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM article_content WHERE
+		id=#{id}
+	</delete>
+</mapper>

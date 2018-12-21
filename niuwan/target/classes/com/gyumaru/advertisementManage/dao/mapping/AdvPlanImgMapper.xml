@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.advertisementManage.dao.AdvPlanImgDao">
+	<resultMap type="com.gyumaru.advertisementManage.pojo.AdvPlanImg" id="AdvPlanImg">
+		<id property="id" column="id" />
+		<result property="type" column="type" />
+		<result property="url" column="url" />
+		<result property="advPlanId" column="adv_plan_id" />
+	</resultMap>
+	<sql id="base_column">
+		id,type,url,adv_plan_id
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="AdvPlanImg">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan_img WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="AdvPlanImg">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan_img
+		<where>
+			<if test="url !=null and url !=''">
+				AND url=#{url}
+			</if>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="type !=null and type !=''">
+				AND type=#{type}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM t_adv_plan_img
+		<where>
+			<if test="url !=null and url !=''">
+				AND url=#{url}
+			</if>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="type !=null and type !=''">
+				AND type=#{type}
+			</if>
+		</where>
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+
+
+	<insert id="insert" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlanImg"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO
+		t_adv_plan_img(type,url,adv_plan_id)
+		VALUES(#{type},#{url},#{advPlanId})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlanImg">
+		UPDATE t_adv_plan_img
+		<set>
+			<if test="url !=null and url !=''">
+				url=#{url},
+			</if>
+			<if test="advPlanId !=null and advPlanId !=''">
+				adv_plan_id=#{advPlanId},
+			</if>
+			<if test="type !=null and type !=''">
+				type=#{type}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_adv_plan_img WHERE
+		id=#{id}
+	</delete>
+</mapper>

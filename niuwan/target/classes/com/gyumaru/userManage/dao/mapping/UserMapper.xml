@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.userManage.dao.UserDao">
+	<resultMap type="com.gyumaru.userManage.pojo.User" id="user">
+		<id property="id" column="id" />
+		<result property="uid" column="uid" />
+		<result property="userid" column="userid" />
+		<result property="account" column="account" />
+		<result property="pwd" column="pwd" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<result property="age" column="age" />
+		<result property="headimg" column="headimg" />
+		<result property="profession" column="profession" />
+		<result property="state" column="state" />
+		<result property="idfa" column="idfa" />
+		<result property="pl" column="pl" />
+		<association property="region" javaType="Region" column="region_id"
+			select="com.gyumaru.regionManage.dao.RegionDao.getInfoById">
+		</association>
+		<association property="county" javaType="County" column="county_id"
+			select="com.gyumaru.regionManage.dao.CountyDao.getInfoById">
+		</association>
+		<association property="city" javaType="City" column="city_id"
+			select="com.gyumaru.regionManage.dao.CityDao.getInfoById">
+		</association>
+	</resultMap>
+	<sql id="base_column">
+		id,uid,userid,account,pwd,name,sex,age,profession,state,region_id,county_id,city_id,headimg,idfa,pl
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="user">
+		SELECT
+		<include refid="base_column" />
+		FROM t_user WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="user">
+		SELECT
+		<include refid="base_column" />
+		FROM t_user m
+		<where>
+			<if test="account !=null and account!=''">
+				AND account=#{account}
+			</if>
+			<if test="pwd !=null and pwd!=''">
+				AND pwd=#{pwd}
+			</if>
+			<if test="userid !=null and userid !=''">
+				AND userid=#{userid}
+			</if>
+			<if test="idfa !=null and idfa !=''">
+				AND idfa=#{idfa}
+			</if>
+			<if test="uid !=null and uid!=''">
+				AND uid=#{uid}
+			</if>
+			<if test="pl !=null and pl !=''">
+				AND pl=#{pl}
+			</if>
+			<if test="name!=null and name!=''">
+				AND name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="state!=null">
+				AND state=#{state}
+			</if>
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM t_user m
+		<where>
+			<if test="name!=null and name!=''">
+				AND name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="state!=null">
+				AND state=#{state}
+			</if>
+		</where>
+	</select>
+
+
+	<insert id="insert" parameterType="com.gyumaru.userManage.pojo.User" useGeneratedKeys="true"
+		keyColumn="id" keyProperty="id">
+		INSERT INTO
+		t_user(uid,userid,account,pwd,name,sex,age,profession,state,region_id,county_id,city_id,headimg,idfa,pl)
+		VALUES(#{uid},#{userid},#{account},#{pwd},#{name},#{sex},#{age},#{profession},#{state},#{region.id},#{county.id},#{city.id},#{headimg},#{idfa},#{pl})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.userManage.pojo.User">
+		UPDATE t_user
+		<set>
+			<if test="uid !=null and uid !=''">
+				uid=#{uid},
+			</if>
+			<if test="account !=null and account !=''">
+				account=#{account},
+			</if>
+			<if test="pwd !=null and pwd !=''">
+				pwd=#{pwd},
+			</if>
+			<if test="name !=null and name !=''">
+				name=#{name},
+			</if>
+			<if test="idfa !=null and idfa !=''">
+				idfa=#{idfa},
+			</if>
+			<if test="pl !=null and pl !=''">
+				pl=#{pl},
+			</if>
+			<if test="region !=null ">
+				<if test="region.id !=null and region.id !=''">
+					region_id=#{region.id},
+				</if>
+			</if>
+			<if test="county !=null ">
+				<if test="county.id !=null and county.id !=''">
+					county_id=#{county.id},
+				</if>
+			</if>
+			<if test="city !=null ">
+				<if test="city.id !=null and city.id!=''">
+					city_id=#{city.id},
+				</if>
+			</if>
+			<if test="profession !=null and profession !=''">
+				profession=#{profession},
+			</if>
+			<if test="headimg !=null and headimg !=''">
+				headimg=#{headimg},
+			</if>
+			<if test="sex !=null">
+				sex=#{sex},
+			</if>
+			<if test="age !=null">
+				age=#{age},
+			</if>
+			<if test="state!=null">
+				state=#{state}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">`
+		DELETE FROM t_user WHERE
+		id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.advertManage.dao.AdvertDao">
+	<resultMap type="com.gyumaru.pojo.Advert" id="Advert">
+		<id property="id" column="id" />
+		<result property="gameUrl" column="game_url" />
+		<result property="imgUrl" column="img_url" />
+	</resultMap>
+
+	<sql id="base_column">
+		id,game_url,img_url
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="Advert">
+		SELECT
+		<include refid="base_column" />
+		FROM advert WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="Advert">
+		SELECT
+		<include refid="base_column" />
+		FROM advert 
+		<where>
+			<if test="gameUrl!=null and gameUrl!=''">
+				AND game_url=#{gameUrl}
+			</if>
+			<if test="imgUrl !=null and imgUrl !=''">
+				AND img_url=#{imgUrl}
+			</if>
+		</where>
+		
+		
+	</select>
+	
+
+	<insert id="insert" parameterType="com.gyumaru.pojo.Advert">
+		INSERT INTO
+		advert(gameUrl,imgUrl)
+		VALUES(#{gameUrl},#{imgUrl})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.Advert">
+		UPDATE advert
+		<set>
+			<if test="gameUrl !=null and gameUrl!=''">
+				game_url=#{gameUrl},
+			</if>
+			<if test="imgUrl !=null and imgUrl!=''">
+				img_url=#{imgUrl},
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM advert WHERE
+		id=#{id}
+	</delete>
+</mapper>

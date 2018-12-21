@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.collectManage.dao.CollectDao">
+	<resultMap type="com.gyumaru.pojo.Collect" id="collect">
+		<id property="id" column="id" />
+		<id property="type" column="type" />
+		<id property="modeId" column="mode_id" />
+		<id property="collectTime" column="collect_time" />
+		<id property="userId" column="user_id" />
+		<id property="imgUrl" column="imgUrl" />
+		<id property="title" column="title" />
+		<id property="content" column="content" />
+		<id property="modetypeId" column="modetypeId" />
+	</resultMap>
+	<sql id="base_column">
+		id,type,mode_id,user_id,DATE_FORMAT(collect_time,'%Y-%m-%d %H:%i') as collect_time
+	</sql>
+	<select id="getInfoById" parameterType="Integer" resultMap="collect">
+		SELECT
+		<include refid="base_column" />
+		FROM t_collect WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="collect">
+		SELECT
+		<include refid="base_column" />
+		FROM t_collect
+		<where>
+			<if test="type !=null">
+				AND type=#{type}
+			</if>
+			<if test="modeId !=null">
+				AND mode_id=#{modeId}
+			</if>
+			<if test="userId !=null">
+				AND user_id=#{userId}
+			</if>
+		</where>
+		ORDER BY id DESC
+		
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.pojo.Collect">
+		INSERT INTO
+		t_collect(type,mode_id,user_id,collect_time)
+		VALUES(#{type},#{modeId},#{userId},now())
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.Collect">
+		UPDATE t_collect
+		<set>
+			<if test="type !=null ">
+				type=#{type},
+			</if>
+
+			<if test="modeId !=null">
+				mode_id=#{modeId},
+			</if>
+			<if test="userId !=null">
+				user_id=#{userId},
+			</if>
+			<if test="collect_time !=null">
+				collect_time=#{collectTime},
+			</if>
+
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_collect WHERE
+		id=#{id}
+	</delete>
+</mapper>

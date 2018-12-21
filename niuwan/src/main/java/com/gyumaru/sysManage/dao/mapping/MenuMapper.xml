@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.sysManage.dao.MenuDao">
+    <resultMap type="com.gyumaru.pojo.Menu" id="menu">
+        <id property="id" column="id"/>
+        <result property="p_id" column="p_id"/>
+        <result property="name" column="name"/>
+        <result property="icon" column="icon"/>
+        <result property="menu_url" column="menu_url"/>
+    </resultMap>
+    <sql id="base_column" >
+   	 id, p_id, name, icon, menu_url
+  	</sql>
+    <select id="getInfoById" parameterType="Integer" resultMap="menu">
+        SELECT <include refid="base_column" /> FROM d_menu WHERE id=#{id}
+    </select>
+    <select id="getInfoList" parameterType="Map" resultMap="menu">
+        SELECT <include refid="base_column" /> FROM d_menu WHERE 1=1
+        <if test="p_id!=null and p_id!=''">
+            AND p_id=#{p_id}
+        </if>
+    </select>
+    <insert id="insert" parameterType="com.gyumaru.pojo.Menu">
+        INSERT INTO d_menu(p_id,name,icon,menu_url) VALUES(#{p_id},#{name},#{icon},#{menu_url})
+    </insert>
+    <update id="update" parameterType="com.gyumaru.pojo.Menu">
+        UPDATE d_menu
+        <set>
+            <if test="p_id!=null and p_id!=''">
+                p_id=#{p_id},
+            </if>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="icon!=null and icon!=''">
+                icon=#{icon},
+            </if>
+            <if test="menu_url!=null and menu_url!=''">
+                menu_url=#{menu_url}
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM d_menu WHERE id=#{id}
+    </delete>
+    <!-- 删除当前角色所有授权 -->
+    <delete id="deleteRoleMenuByRoleId" parameterType="Integer">
+        DELETE FROM t_role_menu WHERE role_id=#{roleId}
+    </delete>
+</mapper>

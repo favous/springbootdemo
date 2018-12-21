@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.advertisementManage.dao.AdvPlanUserDao">
+	<resultMap type="com.gyumaru.advertisementManage.pojo.AdvPlanUser" id="AdvPlanUser">
+		<id property="id" column="id" />
+		<result property="displayNum" column="display_num" />
+		<result property="clickNum" column="click_num" />
+		<result property="totaldisNum" column="totaldisNum" />
+		<result property="totalclickNum" column="totalclickNum" />
+		 <association property="user" javaType="com.gyumaru.userManage.pojo.User"
+            column="user_id" select="com.gyumaru.userManage.dao.UserDao.getInfoById">
+        </association>
+         <association property="advPlan" javaType="com.gyumaru.advertisementManage.pojo.AdvPlan"
+            column="adv_plan_id" select="com.gyumaru.advertisementManage.dao.AdvPlanDao.getInfoById">
+        </association>
+	</resultMap>
+	<sql id="base_column">
+		id,display_num,click_num,user_id,adv_plan_id
+	</sql>
+
+	<select id="getInfoById" parameterType="Integer" resultMap="AdvPlanUser">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan_user WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="AdvPlanUser">
+		SELECT
+		<include refid="base_column" />
+		FROM t_adv_plan_user
+		<where>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="userId !=null and userId !=''">
+				AND user_id=#{userId}
+			</if>
+			<if test="displayNum !=null and displayNum !=''">
+				AND display_num=#{displayNum}
+			</if>
+			<if test="clickNum !=null and clickNum !=''">
+				AND click_num=#{clickNum}
+			</if>
+			
+		</where>
+		order by id desc
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	<select id="getdcNum" parameterType="Map" resultType="AdvPlanUser">
+		SELECT SUM(display_num) AS totaldisNum,SUM(click_num) AS totalclickNum
+		FROM t_adv_plan_user
+		<where>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="userId !=null and userId !=''">
+				AND user_id=#{userId}
+			</if>
+			<if test="displayNum !=null and displayNum !=''">
+				AND display_num=#{displayNum}
+			</if>
+			<if test="clickNum !=null and clickNum !=''">
+				AND click_num=#{clickNum}
+			</if>
+		</where>
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+	
+	
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM t_adv_plan_user
+		<where>
+			<if test="advPlanId !=null and advPlanId !=''">
+				AND adv_plan_id=#{advPlanId}
+			</if>
+			<if test="userId !=null and userId !=''">
+				AND user_id=#{userId}
+			</if>
+			<if test="displayNum !=null and displayNum !=''">
+				AND display_num=#{displayNum}
+			</if>
+			<if test="clickNum !=null and clickNum !=''">
+				AND click_num=#{clickNum}
+			</if>
+		</where>
+		<if test="startPage!=null">
+			limit #{startPage},#{limit}
+		</if>
+	</select>
+
+
+	<insert id="insert" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlanUser"  useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		INSERT INTO
+		t_adv_plan_user(adv_plan_id,user_id,display_num,click_num)
+		VALUES(#{advPlan.id},#{user.id},#{displayNum},#{clickNum})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.advertisementManage.pojo.AdvPlanUser">
+		UPDATE t_adv_plan_user
+		<set>
+			<if test="user.id !=null and user.id !=''">
+				user_id=#{user.id},
+			</if>
+			<if test="displayNum !=null and displayNum !=''">
+				display_num=#{displayNum},
+			</if>
+			<if test="clickNum !=null and clickNum !=''">
+				click_num=#{clickNum},
+			</if>
+			<if test="advPlan.id !=null and advPlan.id !=''">
+				adv_plan_id=#{advPlan.id}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_adv_plan_user WHERE
+		id=#{id}
+	</delete>
+</mapper>

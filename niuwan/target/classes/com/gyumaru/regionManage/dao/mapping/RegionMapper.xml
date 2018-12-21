@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.regionManage.dao.RegionDao">
+	<resultMap type="com.gyumaru.regionManage.pojo.Region" id="region">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+	</resultMap>
+	<sql id="base_column">
+		id, name
+	</sql>
+	<select id="getInfoById" parameterType="Integer" resultMap="region">
+		SELECT
+		<include refid="base_column" />
+		FROM d_region WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="region">
+		SELECT
+		<include refid="base_column" />
+		FROM d_region
+		<where>
+		</where>
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.regionManage.pojo.Region">
+		INSERT INTO
+		d_region(name)
+		VALUES(#{name})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.regionManage.pojo.Region">
+		UPDATE d_region
+		<set>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM d_region WHERE id=#{id}
+	</delete>
+</mapper>

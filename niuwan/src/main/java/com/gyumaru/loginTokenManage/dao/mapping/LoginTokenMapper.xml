@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.loginTokenManage.dao.LoginTokenDao">
+	<resultMap type="com.gyumaru.pojo.LoginToken" id="loginToken">
+		<id property="id" column="id" />
+		<id property="userId" column="user_id" />
+		<id property="token" column="token" />
+		<id property="loginTime" column="login_time" />
+	</resultMap>
+	<sql id="base_column">
+		id,user_id,token,DATE_FORMAT(login_time,'%Y-%m-%d %H:%i') as login_time
+	</sql>
+	<select id="getInfoById" parameterType="Integer" resultMap="loginToken">
+		SELECT
+		<include refid="base_column" />
+		FROM t_login_token WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="loginToken">
+		SELECT
+		<include refid="base_column" />
+		FROM t_login_token
+		<where>
+			<if test="userId !=null">
+				AND user_id=#{userId}
+			</if>
+			<if test="token !=null">
+				AND token=#{token}
+			</if>
+			<if test="login_time !=null">
+				AND login_time=#{loginTime}
+			</if>
+		</where>
+		ORDER BY id DESC
+		
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.pojo.LoginToken">
+		INSERT INTO
+		t_login_token(user_id,token,login_time)
+		VALUES(#{userId},#{token},now())
+	</insert>
+	<update id="update" parameterType="com.gyumaru.pojo.LoginToken">
+		UPDATE t_login_token
+		<set>
+			<if test="userId !=null ">
+				user_id=#{userId},
+			</if>
+			<if test="token !=null">
+				token=#{token},
+			</if>
+			<if test="loginTime !=null">
+				login_time=#{loginTime},
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM t_login_token WHERE
+		id=#{id}
+	</delete>
+</mapper>

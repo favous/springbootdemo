@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gyumaru.regionManage.dao.CountyDao">
+	<resultMap type="com.gyumaru.regionManage.pojo.County" id="county">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<association property="region" javaType="Region" column="region_id"
+			select="com.gyumaru.regionManage.dao.RegionDao.getInfoById">
+		</association>
+	</resultMap>
+	<sql id="base_column">
+		id, name,region_id
+	</sql>
+	<select id="getInfoById" parameterType="Integer" resultMap="county">
+		SELECT
+		<include refid="base_column" />
+		FROM d_county WHERE id=#{id}
+	</select>
+	<select id="getInfoList" parameterType="Map" resultMap="county">
+		SELECT
+		<include refid="base_column" />
+		FROM d_county
+		<where>
+			<if test="regionId !=null and regionId !=''">
+				AND region_id=#{regionId}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="com.gyumaru.regionManage.pojo.County">
+		INSERT INTO
+		d_county(name,region_id)
+		VALUES(#{name},#{region.id})
+	</insert>
+	<update id="update" parameterType="com.gyumaru.regionManage.pojo.County">
+		UPDATE d_county
+		<set>
+		</set>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM d_county WHERE id=#{id}
+	</delete>
+</mapper>
